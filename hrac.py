@@ -73,7 +73,6 @@ class Hrac(QObject):
     def string_ruka_pasiv(self, value):
         self._string_ruka_pasiv = value
         self.string_ruka_pasiv_change.emit(value)
-        print(value)
 
         
 
@@ -85,7 +84,6 @@ class Hrac(QObject):
     def string_ruka(self, value):
         self._string_ruka = value
         self.string_ruka_change.emit(value)
-        print(value)
 
         
     @property
@@ -96,7 +94,6 @@ class Hrac(QObject):
     def bodova_hodnota_celek(self, value):
         self._bodova_hodnota_celek = value
         self.bodova_hodnota_celek_changed.emit(value)
-        print(value)
 
     @property
     def limit(self):
@@ -106,7 +103,6 @@ class Hrac(QObject):
     def limit(self, value):
         self._limit = value
         self.limit_change.emit(value)
-        print(value)
 
     @property
     def max_limit(self):
@@ -116,7 +112,6 @@ class Hrac(QObject):
     def max_limit(self, value):
         self._max_limit = value
         self.max_limit_change.emit(value)
-        print(value)
         
 
 
@@ -168,6 +163,18 @@ class Hrac(QObject):
         self.bodova_hodnota_efekty = 0
         self.bodova_hodnota_celek = 0
         seznam_karet_použité.clear()
+
+def ind(name):
+    """vrátí index objektu v list_karet podle atributu name"""
+    from hrac import list_karet
+    cont = True
+    index = 0
+    while cont == True:
+        if list_karet[index].name.lower() != name.lower():
+            index +=1
+        else:
+            cont = False
+    return index
         
 
 list_karet = [Karta(karta['name'], karta['body'], karta['typ'],

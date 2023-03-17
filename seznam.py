@@ -6,7 +6,7 @@ seznam_typu = ['oheň', 'zbraň', 'artefakt' , 'armáda', 'vůdce',
 seznam_karet = [
     {'name' : 'Svíčka', 'body' : 2, 'typ' : 'oheň',
      'bonus': 'bkt',
-     'efekt': [0, 100, 'plus', ['Kniha proměn' , 'Zvonice'], ['čaroděj']]},
+     'efekt': [0, 100, 'plus', ['Kniha proměn' , 'Zvonice'], 'čaroděj']},
 ############################################################################    
     {'name' : 'Blesk', 'body' : 11, 'typ' : 'oheň',
      'bonus': 'bkt',
@@ -66,11 +66,11 @@ seznam_karet = [
 ############################################################################    
     {'name' : 'Trpasličí pěchota', 'body' : 15,  'typ' : 'armáda',
      'postih': 'bkt',
-     'efekt2' : [-2, 0, 'every', [], 'armáda']},
+     'efekt2' : [-2, 0, 'every', [], ['armáda']]},
 ############################################################################    
     {'name' : 'Těžká jízda',       'body' : 17,  'typ' : 'armáda',
      'postih': 'bkt',
-     'efekt2' : [-2, 0, 'every', [], 'země']},
+     'efekt2' : [-2, 0, 'every', [], ['země']]},
 ############################################################################    
     {'name' : 'Hraničáři',         'body' : 5,   'typ' : 'armáda',
      'bonus': 'bkt',
@@ -80,11 +80,11 @@ seznam_karet = [
 ############################################################################    
     {'name' : 'Rytířky',           'body' : 20,  'typ' : 'armáda',
      'postih': 'bkt',
-     'efekt2' : [-8, 0, 'nope', [], 'vůdce']},
+     'efekt2' : [-8, 0, 'nope', [], ['vůdce']]},
 ############################################################################    
     {'name' : 'Elfí lučištníci',    'body' : 10,  'typ' : 'armáda',
      'bonus': 'bkt',
-     'efekt' : [5, 0, 'nope', [], 'počasí']},
+     'efekt' : [5, 0, 'nope', [], ['počasí']]},
 ############################################################################    
     {'name' : 'Velitel',           'body' : 4,   'typ' : 'vůdce',
      'bonus': 'bkt',
@@ -98,7 +98,7 @@ seznam_karet = [
      'bonus': 'bkt',
      'efekt' : [10, 0, 'every', [], 'armáda'],
      'postih' : 'bkt',
-     'efekt2' : [-5, 0, 'every', [], 'vůdce']},
+     'efekt2' : [-5, 0, 'every', [], ['vůdce']]},
 ############################################################################    
     {'name' : 'Královna',          'body' : 6,   'typ' : 'vůdce',
      'bonus': 'bkt',
@@ -221,4 +221,3 @@ seznam_karet = [
      'bonus': 'lc'}
      ]
 
-print(len(seznam_karet))

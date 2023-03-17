@@ -1,5 +1,6 @@
 from funkce_karet import *
 
+
 def mazani_podle_priority(user, priorita):
     """Spustí mazání ostatních karet v závislosti na zadané prioritě"""
     for x in user.ruka:
@@ -48,9 +49,9 @@ def aktive_true(user):
     for x in user.ruka:
         x.aktiv = True
 
-
-
 def stringy_karet(user):
+    """převádí názvy karet na ruce na stringy
+        s aktivními a vymazanými kartami"""
     user.string_ruka = ""
     string_list = [str(obj) for obj in user.ruka]
     separator = ", "
@@ -61,7 +62,6 @@ def stringy_karet(user):
     separator = ", "
     user.string_ruka_pasiv = separator.join(string_list2)
     
-
 def is_it_active(user):
     """projede ruku hráče a rozdělí ruku na aktivní a pasivní karty"""
     obnova(user)

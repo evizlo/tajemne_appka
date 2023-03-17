@@ -31,7 +31,7 @@ def bonus_karta_typ(user, ID, bonus_typ, bonus_karta, podmínka,
 
     if podmínka == 'nope':
         #ověřuje že nemá daný typ
-        if typ not in typy_karet_v_ruce:
+        if any(typ) not in typy_karet_v_ruce:
             user.bodova_hodnota_efekty += bonus_typ
         
 
