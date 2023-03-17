@@ -89,7 +89,7 @@ def ruzne_efekty_typu(user, podmínka, typy_karet):
             if x.typ in typy_karet:
                 body.append(x.body)                  
         user.bodova_hodnota_efekty += max(body)
-        #print(f'>{body}<')
+
         
 def max_typ(user):
     """Spočítá počet stejných typů karet pro kartu Sběratel"""
@@ -125,7 +125,6 @@ def postupka(user):
     body = {8 : 150, 7 : 150, 6 : 100, 5 : 60, 4 : 30, 3: 10}
     if max_count > 2:
         user.bodova_hodnota_efekty += body[max_count]
-    print(f'{max_count=}')
 
 def licha_cisla(user):
     """počítá liché základní hodnoty karet"""
@@ -164,39 +163,36 @@ def postihy_none(user):
 
 
 def vymazani_karet(user, ID, karta = [], typ = []):
-    ##jmena_karet_v_ruce = [x.name for x in user.ruka]
-    ##maže sepcifické typy, kromě specifických karet
+    """maže sepcifické typy, kromě specifických karet"""
     for x in user.ruka:
         if x.typ in typ and x.ID != ID and x.name not in karta:
             x.aktiv = False
 
 
 def vymazani_sebe_nemas_li(user, ID, karta = [], typ = []):
-    ##vymazána nemáš li alespon jedn typ
+    """vymazána nemáš li alespon jedn typ"""
     typy_karet_v_ruce = set([x.typ for x in user.ruka])
     if any(x in typy_karet_v_ruce for x in typ[0]):
-        print('joooo')
         for x in user.ruka:
             if x.ID == ID:
                 x.aktiv = True
     else:
-        print('néééééé')
-        print(typ[0])
         for x in user.ruka:
             if x.ID == ID:
                 x.aktiv = False
 
 
-def vymazani_sebe_mas_li(user, ID, karta = [], typ = []):
+def vymazani_sebe_mas_li(user, ID, karta = [], typ = []):   
+    """vymazána pokud mám aspon jeden typ"""
     typy_karet_v_ruce = set([x.typ for x in user.ruka])
     if any(x in typy_karet_v_ruce for x in typ[1]):
-        ##vymazána pokud mám aspon jeden typ
         for x in user.ruka:
             if x.ID == ID:
                 x.aktiv = False
 
 
 def ostran_postih(user, typ):
+    """nastaví všechny postihy karet na False"""
     for x in user.ruka:
         if x.typ == typ:
             x.postih_stav = False

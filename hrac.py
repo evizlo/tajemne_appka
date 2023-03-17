@@ -128,7 +128,6 @@ class Hrac(QObject):
         if nova in seznam_karet_použité or self.limit == 0:        
             print("Nelze přidat")
         else:
-            print(nova)
             self.limit -= 1 ##sníží o jedna
             seznam_karet_použité.append(nova) ##hodí novou kartu do použitých
             
@@ -153,6 +152,8 @@ class Hrac(QObject):
         spocitej_body(self)
 
     def reset(self):
+        """resetuje hráče do stavu bez karet a
+            obnoví všechny atributy karet"""
         for x in self.ruka:
             self.odebrat_kartu(x.name)
         for x in self.ruka_pasiv:
@@ -167,22 +168,7 @@ class Hrac(QObject):
         self.bodova_hodnota_efekty = 0
         self.bodova_hodnota_celek = 0
         seznam_karet_použité.clear()
-        print(seznam_karet_použité)
         
-        
-                       
-        
-        
-def ind(name):
-    #vrátí index objektu v list_karet podle atributu name
-    cont = True
-    index = 0
-    while cont == True:
-        if list_karet[index].name.lower() != name.lower():
-            index +=1
-        else:
-            cont = False
-    return index
 
 list_karet = [Karta(karta['name'], karta['body'], karta['typ'],
                           karta.get('bonus'), karta.get('efekt'),

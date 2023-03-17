@@ -1,4 +1,3 @@
-#from hrac import card_states
 from funkce_karet import *
 from is_active import *
 from seznam_2 import seznam_karet_2
@@ -24,6 +23,7 @@ def recovery(user, karta, index):
     karta.postih_stav = True
 
 def recovery_ruka(user):
+    """obnoví atributy všech karet na ruce"""
     from hrac import list_karet
     from hrac import ind
     for x in user.ruka:
@@ -33,6 +33,7 @@ def recovery_ruka(user):
         
 
 def spocitej_body(user):
+    """spočítá body třídě Hrac a ošetří aktivní status karty"""
     user.bodova_hodnota_efekty = 0
     user.bodova_hodnota = 0
     user.bodova_hodnota_celek = 0
@@ -66,6 +67,7 @@ def spocitej_body(user):
                                 user.bodova_hodnota_efekty)
 
 def postihy_ostraneni(user):
+    """odstraní postihy podle ruzných požadavků"""
     for x in user.ruka:
         if x.odstran == 'odstr':
             ostran_postih(user, x.efekt4)
@@ -73,6 +75,35 @@ def postihy_ostraneni(user):
             odstran_slovo(user, x.efekt4)
         if x.odstran == 'exclusive':
             odstran_slovo_ex(user, x.efekt4)
+
+
+        
+def ind(name):
+    """vrátí index objektu v list_karet podle atributu name"""
+    cont = True
+    index = 0
+    while cont == True:
+        if list_karet[index].name.lower() != name.lower():
+            index +=1
+        else:
+            cont = False
+    return index
+
+
+def stringy_karet(user):
+    """převádí názvy karet na ruce na stringy
+        s aktivními a vymazanými kartami"""
+    user.string_ruka = ""
+    string_list = [str(obj) for obj in user.ruka]
+    separator = ", "
+    user.string_ruka = separator.join(string_list)
+    
+    user.string_ruka_pasiv = ""
+    string_list2 = [str(obj) for obj in user.ruka_pasiv]
+    separator = ", "
+    user.string_ruka_pasiv = separator.join(string_list2)
+    
+
             
         
             
