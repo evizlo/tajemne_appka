@@ -1,5 +1,5 @@
 # tajemne_appka
- companion app for Fantasy realms score
+ companion app for Fantasy realms score_
  Aplikace na výpočet skóre pro hru Tajuplné říše.
  Stávající verzi chybí karty typu: Divoká a karty Ostrov a 
  Kniha proměn nejsou plně fuknční z důvodu nutnosti zadávání 
