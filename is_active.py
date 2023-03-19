@@ -1,11 +1,11 @@
-from funkce_karet import *
+from hrac import *
 
 
 def mazani_podle_priority(user, priorita):
     """Spustí mazání ostatních karet v závislosti na zadané prioritě"""
     for x in user.ruka:
         if x.mazani == priorita and x.aktiv == True and x.postih_stav == True:
-            vymazani_karet(user, x.ID, *x.efekt3)
+            x.vymazani_karet(user, x.ID, *x.efekt3)
 
 
 def mazani_karet(user, pocet):
@@ -28,14 +28,14 @@ def vymazani_nemas(user):
     """Zneaktivní karty, které nemají specifickou kartu do páru"""
     for x in user.ruka:
         if x.vymaz_nemasli == True and x.postih_stav == True:
-            vymazani_sebe_nemas_li(user, x.ID, *x.efekt3)
+            x.vymazani_sebe_nemas_li(user, x.ID, *x.efekt3)
     sprava_karet(user)
     
 def vymazani_mas(user):
     """Zneaktivní karty, kteréjsou blokovány jinou kartou"""
     for x in user.ruka:
         if x.vymaz_masli == True and x.postih_stav == True:
-            vymazani_sebe_mas_li(user, x.ID, *x.efekt3)
+            x.vymazani_sebe_mas_li(user, x.ID, *x.efekt3)
     sprava_karet(user)
             
 def obnova(user):

@@ -1,9 +1,9 @@
-from funkce_karet import *
 from is_active import *
 from seznam_2 import seznam_karet_2
 from seznam import seznam_karet
 from hrac import *
 import copy
+#from hrac import Karta
 
 
 
@@ -49,21 +49,21 @@ def spocitej_body(user):
     for x in user.ruka:
         user.bodova_hodnota += x.body 
         if x.bonus == 'post':
-            postupka(user)
+            x.postupka(user)
         if x.bonus == 'bkt':
-            bonus_karta_typ(user, x.ID, *x.efekt)
+            x.bonus_karta_typ(user, x.ID, *x.efekt)
         if x.postih == 'bkt' and x.postih_stav == True:
-            bonus_karta_typ(user, x.ID, *x.efekt2)
+            x.bonus_karta_typ(user, x.ID, *x.efekt2)
         if x.bonus == 'ret':
-            ruzne_efekty_typu(user, *x.efekt)
+            x.max_hodnota(user, *x.efekt)
         if x.bonus == 'mt':
-            max_typ(user)
+            x.max_typ(user)
         if x.bonus == 'pl':
-            plus_limit(user)
+            x.plus_limit(user)
         if x.bonus == 'lc':
-            licha_cisla(user)
+            x.licha_cisla(user)
         if x.bonus == 'nt':
-            nestejne_typy(user)
+            x.nestejne_typy(user)
     user.bodova_hodnota_celek = (user.bodova_hodnota +
                                 user.bodova_hodnota_efekty)
 
@@ -71,11 +71,17 @@ def postihy_ostraneni(user):
     """odstraní postihy podle ruzných požadavků"""
     for x in user.ruka:
         if x.odstran == 'odstr':
-            ostran_postih(user, x.efekt4)
+            x.ostran_postih(user, x.efekt4)
         if x.odstran == 'slovo':
-            odstran_slovo(user, x.efekt4)
+            x.odstran_slovo(user, x.efekt4)
         if x.odstran == 'exclusive':
-            odstran_slovo_ex(user, x.efekt4)
+            x.odstran_slovo_ex(user, x.efekt4)
+
+def postihy_none(user):
+    """Nastaví všechny postihy na None, musí být první"""
+    if any('11-Ochranná runa' == x.ID for x in user.ruka):
+        for x in user.ruka:
+            x.postih_stav = False
 
 
 
