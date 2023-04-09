@@ -1,75 +1,75 @@
 from hrac import *
 
 
-def mazani_podle_priority(user, priorita):
+def erase_by_priority(user, priority):
     """Spustí mazání ostatních karet v závislosti na zadané prioritě"""
-    for x in user.ruka:
-        if x.mazani == priorita and x.aktiv == True and x.postih_stav == True:
-            x.vymazani_karet(user, x.ID, *x.efekt3)
+    for x in user.hand:
+        if x.erase == priority and x.activ == True and x.penalty_condition == True:
+            x.erase_cards(user, x.ID, *x.effect3)
 
 
-def mazani_karet(user, pocet):
+def erase(user, count):
     """postupně provede mazani podle priorit od jedné
     do počtu druhů priorit celkem"""
-    priorita = 1
-    while priorita != pocet + 1:
-        mazani_podle_priority(user, f'priorita_{priorita}')
-        sprava_karet(user)
-        priorita += 1
+    priority = 1
+    while priority != count + 1:
+        erase_by_priority(user, f'priorita_{priorita}')
+        cards_mgmt(user)
+        priority += 1
 
-def sprava_karet(user):
+def cards_mgmt(user):
     """přeseune neaktivní karty do listu pasivních karet"""
-    for x in user.ruka:
-        if x.aktiv == False:
-            user.ruka.remove(x)
-            user.ruka_pasiv.append(x)
+    for x in user.hand:
+        if x.activ == False:
+            user.hand.remove(x)
+            user.hand_pasiv.append(x)
         
-def vymazani_nemas(user):
+def pasiv_if_not(user):
     """Zneaktivní karty, které nemají specifickou kartu do páru"""
-    for x in user.ruka:
-        if x.vymaz_nemasli == True and x.postih_stav == True:
-            x.vymazani_sebe_nemas_li(user, x.ID, *x.efekt3)
-    sprava_karet(user)
+    for x in user.hand:
+        if x.erase_not_if == True and x.penalty_condition == True:
+            x.erase_no_color(user, x.ID, *x.effect3)
+    cards_mgmt(user)
     
-def vymazani_mas(user):
+def pasiv_if(user):
     """Zneaktivní karty, kteréjsou blokovány jinou kartou"""
-    for x in user.ruka:
-        if x.vymaz_masli == True and x.postih_stav == True:
-            x.vymazani_sebe_mas_li(user, x.ID, *x.efekt3)
-    sprava_karet(user)
+    for x in user.hand:
+        if x.erase_if == True and x.penalty_condition == True:
+            x.erase_if_color(user, x.ID, *x.effect3)
+    cards_mgmt(user)
             
-def obnova(user):
+def all_activ(user):
     """Hodí všechny karty do aktivní ruky"""
-    for x in user.ruka_pasiv:
-        user.ruka.append(x)
-        user.ruka_pasiv.remove(x)
+    for x in user.hand_pasiv:
+        user.hand.append(x)
+        user.hand_pasiv.remove(x)
 
-def aktive_true(user):
+def active_true(user):
     """Zaktivní všechny karty na ruce"""
-    for x in user.ruka:
-        x.aktiv = True
+    for x in user.hand:
+        x.activ = True
 
-def stringy_karet(user):
+def cards_string(user):
     """převádí názvy karet na ruce na stringy
         s aktivními a vymazanými kartami"""
-    user.string_ruka = ""
-    string_list = [str(obj) for obj in user.ruka]
+    user.string_hand = ""
+    string_list = [str(obj) for obj in user.hand]
     separator = ", "
-    user.string_ruka = separator.join(string_list)
+    user.string_hand = separator.join(string_list)
     
-    user.string_ruka_pasiv = ""
-    string_list2 = [str(obj) for obj in user.ruka_pasiv]
+    user.string_hand_pasiv = ""
+    string_list2 = [str(obj) for obj in user.hand_pasiv]
     separator = ", "
-    user.string_ruka_pasiv = separator.join(string_list2)
+    user.string_hand_pasiv = separator.join(string_list2)
     
 def is_it_active(user):
     """projede ruku hráče a rozdělí ruku na aktivní a pasivní karty"""
-    obnova(user)
-    aktive_true(user)
-    mazani_karet(user, 4)
-    vymazani_nemas(user)
-    vymazani_mas(user)   
-    stringy_karet(user)
+    all_activ(user)
+    active_true(user)
+    erase(user, 4)
+    pasiv_if_not(user)
+    pasiv_if(user)   
+    cards_string(user)
 
 
 

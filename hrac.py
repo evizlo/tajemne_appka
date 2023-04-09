@@ -198,7 +198,7 @@ class Card():
             if x.color in colors and x.ID != ID and x.name not in cards:
                 x.activ = False
 
-    def erase_if_not(self, user, ID, cards = [], colors = []):
+    def erase_no_color(self, user, ID, cards = [], colors = []):
         """vymazána nemáš li alespon jedn typ"""
         colors_in_hand = set([x.color for x in user.hand])
         if any(x in colors_in_hand for x in colors[0]):
@@ -210,7 +210,7 @@ class Card():
                 if x.ID == ID:
                     x.activ = False
 
-    def erase_if(self, user, ID, cards = [], colors = []):   
+    def erase_if_color(self, user, ID, cards = [], colors = []):   
         """vymazána pokud mám aspon jeden typ"""
         colors_in_hand = set([x.color for x in user.hand])
         if any(x in colors_in_hand for x in colors[1]):
