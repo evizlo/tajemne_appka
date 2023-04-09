@@ -8,177 +8,177 @@ list_karet = []
 
 
 
-class Karta():
+class Card():
 
-    instancí = 0
+    instance = 0
 
 
-    def __init__(self, name, body, typ, bonus, efekt, postih, efekt2,
-                 mazani, efekt3, vymaz_masli, vymaz_nemasli, odstran,
-                 efekt4, aktiv = True, postih_stav = True):
+    def __init__(self, name, points, color, bonus, effect, penalty, effect2,
+                 erase, effect3, erase_if, erase_not_if, delete,
+                 effect4, activ = True, penalty_condition = True):
         self.name = name
-        self.body = body
-        self.typ  = typ
+        self.points = points
+        self.color  = color
         self.bonus = bonus
-        self.efekt = efekt
-        self.postih = postih
-        self.efekt2 = efekt2
-        self.mazani = mazani
-        self.efekt3 = efekt3
-        self.vymaz_masli = vymaz_masli
-        self.vymaz_nemasli = vymaz_nemasli
-        self.odstran = odstran
-        self.efekt4 = efekt4
-        self.aktiv = aktiv
-        self.postih_stav = postih_stav
-        self.ID = f'{Karta.instancí}-{name}'
-        Karta.instancí += 1
+        self.effect = effect
+        self.penalty = penalty
+        self.effect2 = effect2
+        self.erase = erase
+        self.effect3 = effect3
+        self.erase_if = erase_if
+        self.erase_not_if = erase_not_if
+        self.delete = delete
+        self.effect4 = effect4
+        self.activ = activ
+        self.penalty_condition = penalty_condition
+        self.ID = f'{Card.instance}-{name}'
+        Card.instance += 1
         
     def __repr__(self):
         return self.name
 
-    def bonus_karta_typ(self, user, ID, bonus_typ, bonus_karta, podmínka,
-                    karta = [],typ = []):
+    def card_bonus(self, user, ID, bonus_color, bonus_card, condition,
+                    cards = [], colors = []):
         """Spočítá bonusy a postihy na kartách,
         které mají plus a mínus nějaká hodnota"""
 
-        typy_karet_v_ruce  = set([x.typ for x in user.ruka])
-        jmena_karet_v_ruce = [x.name for x in user.ruka]
+        colors_in_hand  = set([x.color for x in user.hand])
+        card_names_in_hand = [x.name for x in user.hand]
 
 
 
-        if podmínka == 'plus':
+        if condition == 'plus':
             #bonus za specifickou kartu, karty, typ nebo obojí
-            if typ in typy_karet_v_ruce or typ == 'bez':
-                if set(karta).issubset(jmena_karet_v_ruce):
-                   user.bodova_hodnota_efekty += (bonus_typ + bonus_karta)                  
+            if colors in colors_in_hand or colors == 'bez':
+                if set(karta).issubset(card_names_in_hand):
+                   user.points_effects += (bonus_color + bonus_card)                  
                 else:
-                    user.bodova_hodnota_efekty += bonus_typ
+                    user.points_effects += bonus_color
 
-        if podmínka == 'plus_every':
+        if condition == 'plus_every':
             #za každý specifický typ plus s bonusem pokud má i specifickou kartu
-            for x in user.ruka:
-                if x.typ == typ:
-                    if set(karta).issubset(jmena_karet_v_ruce):
-                        user.bodova_hodnota_efekty += (bonus_typ + bonus_karta)
+            for x in user.hand:
+                if x.color == colors:
+                    if set(cards).issubset(card_names_in_hand):
+                        user.points_effects += (bonus_color + bonus_card)
                     else:
-                        user.bodova_hodnota_efekty += bonus_typ
+                        user.bodova_hodnota_efekty += bonus_color
                                         
 
-        if podmínka == 'nope':
+        if condition == 'nope':
             #ověřuje že nemá daný typ
-            if any(typ) not in typy_karet_v_ruce:
-                user.bodova_hodnota_efekty += bonus_typ
+            if any(color) not in card_names_in_hand:
+                user.points_effects += bonus_color
             
 
-        if podmínka == 'any_karta':
+        if condition == 'any_karta':
             #ověřuje zda má aspoň jednu kartu co je potřeba
-            for x in jmena_karet_v_ruce:
-                if any(x == prvek for prvek in karta):
-                    user.bodova_hodnota_efekty += bonus_karta
+            for x in card_names_in_hand:
+                if any(x == element for element in cards):
+                    user.points_effects += bonus_card
                     break
 
-        if podmínka == 'any_typ':
+        if condition == 'any_typ':
             #ověřuje zda máš aspoň jeden typ co je potřeba
-            for x in typy_karet_v_ruce:
-                if any(x == prvek for prvek in typ):
-                    user.bodova_hodnota_efekty += bonus_typ
+            for x in colors_in_hand:
+                if any(x == element for element in colors):
+                    user.points_effects += bonus_color
                     break
                     
-        if podmínka == "every":
+        if condition == "every":
             #za každý další stejný nebo jiný typ a/nebo kartu
-            for x in user.ruka:
-                if x.typ in typ and x.ID != ID:
-                    user.bodova_hodnota_efekty += bonus_typ
-            if set(karta).issubset(jmena_karet_v_ruce):
-                user.bodova_hodnota_efekty += bonus_karta
+            for x in user.hand:
+                if x.color in colors and x.ID != ID:
+                    user.points_effects += bonus_color
+            if set(cards).issubset(card_names_in_hand):
+                user.points_effects += bonus_card
                 
-        if podmínka == 'součet':
+        if condition == 'součet':
             #sčíta hodnoty karet
-            for x in user.ruka:
-                if x.typ == typ:
-                    user.bodova_hodnota_efekty += x.body
+            for x in user.hand:
+                if x.color == colors:
+                    user.points_effects += x.points
 
-        if podmínka == 'vice_spec':
+        if condition == 'vice_spec':
             #specifická karta společně s jinou, jinými specifickými kartami
-            podminka1 = set(karta[0])
-            podminka2 = set(karta[1])
-            if podminka1.issubset(jmena_karet_v_ruce):
-                if any(x in jmena_karet_v_ruce for x in podminka2):
-                    user.bodova_hodnota_efekty += bonus_karta
+            condition1 = set(karta[0])
+            condition2 = set(karta[1])
+            if condition1.issubset(card_names_in_hand):
+                if any(x in card_names_in_hand for x in condition2):
+                    user.points_effects += bonus_card
 
-        if podmínka == 'mene_spec':
-            podminka1 = set(karta[0])
-            podminka2 = set(karta[1])
-            if podminka1.issubset(jmena_karet_v_ruce):
-                user.bodova_hodnota_efekty += bonus_karta[0]
+        if condition == 'mene_spec':
+            condition1 = set(cards[0])
+            condition2 = set(cards[1])
+            if condition1.issubset(card_names_in_hand):
+                user.points_effects += bonus_card[0]
             else:
-                if any(x in jmena_karet_v_ruce for x in podminka2):
-                    user.bodova_hodnota_efekty += bonus_karta[1]
+                if any(x in card_names_in_hand for x in podminka2):
+                    user.points_effects += bonus_card[1]
 
-    def max_typ(self, user):
+    def max_same_color(self, user):
         """Spočítá počet stejných typů karet pro kartu Sběratel"""
         max_count = 0
         index = 9
         while index > -1:
-            typ = seznam_typu[index]
-            count = sum(1 for karta in user.ruka if karta.typ == typ)
+            color = seznam_typu[index]
+            count = sum(1 for card in user.hand if karta.color == color)
             if count > max_count:
                 max_count = count
             index -= 1
         if max_count > 4:
-            user.bodova_hodnota_efekty += 100
+            user.points_effects += 100
         elif max_count > 3:
-            user.bodova_hodnota_efekty += 40
+            user.points_effects += 40
         elif max_count > 2:
-            user.bodova_hodnota_efekty += 10
+            user.points_effects += 10
 
-    def max_hodnota(self, user, podmínka, typy_karet):
+    def max_points(self, user, condition, colors):
         """přidá největší základní bodovou hodnotu karty z výběru typů karet"""
 
-        if podmínka == 'přidej':
-            body = [] 
+        if condition == 'přidej':
+            points = [] 
             for x in user.ruka:
-                if x.typ in typy_karet:
-                    body.append(x.body)                  
-            user.bodova_hodnota_efekty += max(body)
+                if x.color in colors:
+                    points.append(x.points)                  
+            user.points_effects += max(points)
 
-    def postupka(self, user):
+    def sequence(self, user):
         """Spočíta sekvence základních bodových hodnot pro krystal řádu"""
         max_count = 1
         current_count = 1
-        serazene_karty = sorted(user.ruka, key=lambda karta: karta.body)
-        for i in range(1, len(serazene_karty)):
-            if serazene_karty[i].body == serazene_karty[i-1].body + 1:
+        sorted_cards = sorted(user.hand, key=lambda card: card.body)
+        for i in range(1, len(sorted_cards)):
+            if sorted_cards[i].points == sorted_cards[i-1].points + 1:
                 current_count += 1
                 max_count = max(max_count, current_count)
-            elif serazene_karty[i].body == serazene_karty[i-1].body:
+            elif sorted_cards[i].points == sorted_cards[i-1].points:
                 current_count += 0
                 max_count = max(max_count, current_count)
             else:
                 current_count = 1
-        body = {8 : 150, 7 : 150, 6 : 100, 5 : 60, 4 : 30, 3: 10}
+        points = {8 : 150, 7 : 150, 6 : 100, 5 : 60, 4 : 30, 3: 10}
         if max_count > 2:
-            user.bodova_hodnota_efekty += body[max_count]
+            user.points_effects += points[max_count]
 
-    def licha_cisla(self, user):
+    def odd_points(self, user):
         """počítá liché základní hodnoty karet"""
         not_even = True
-        součet_bodu = -3
-        for x in user.ruka:
-            if x.body % 2 == 1:
-                součet_bodu += 3
+        all_points = -3
+        for x in user.hand:
+            if x.points % 2 == 1:
+                all_points += 3
             else:
                 not_even = False
         if not_even == True:
-            user.bodova_hodnota_efekty += 50
+            user.points_effects += 50
         else:
-            user.bodova_hodnota_efekty += součet_bodu
+            user.points_effects += all_points
 
-    def nestejne_typy(self, user):
+    def defferent_colors(self, user):
         """zjistí zda jsou všehny typy karet na ruce rozdílné"""
-        if len([x.typ for x in user.ruka]) == len(set([x.typ for x in user.ruka])):
-            user.bodova_hodnota_efekty += 50
+        if len([x.color for x in user.hand]) == len(set([x.color for x in user.hand])):
+            user.points_effects += 50
 
     def plus_limit(self, user):
         """zvýší hráčův limit karet v ruce o jedna"""
@@ -186,126 +186,126 @@ class Karta():
             user.limit += 1
             user.max_limit += 1
 
-    def postihy_none(self, user):
-        """Nastaví všechny postihy na None, musí být první"""
-        if any('11-Ochranná runa' == x.ID for x in user.ruka):
-            for x in user.ruka:
-                x.postih_stav = False
+    def penalty_off_all(self, user):
+        """Nastaví všechny postihy na False, musí být první"""
+        if any('11-Ochranná runa' == x.ID for x in user.hand):
+            for x in user.hand:
+                x.penalty_condition = False
 
-    def vymazani_karet(self, user, ID, karta = [], typ = []):
+    def erase_cards(self, user, ID, cards = [], colors = []):
         """maže sepcifické typy, kromě specifických karet"""
-        for x in user.ruka:
-            if x.typ in typ and x.ID != ID and x.name not in karta:
-                x.aktiv = False
+        for x in user.hnad:
+            if x.color in colors and x.ID != ID and x.name not in cards:
+                x.activ = False
 
-    def vymazani_sebe_nemas_li(self, user, ID, karta = [], typ = []):
+    def erase_if_not(self, user, ID, cards = [], colors = []):
         """vymazána nemáš li alespon jedn typ"""
-        typy_karet_v_ruce = set([x.typ for x in user.ruka])
-        if any(x in typy_karet_v_ruce for x in typ[0]):
-            for x in user.ruka:
+        colors_in_hand = set([x.color for x in user.hand])
+        if any(x in colors_in_hand for x in colors[0]):
+            for x in user.hand:
                 if x.ID == ID:
-                    x.aktiv = True
+                    x.activ = True
         else:
-            for x in user.ruka:
+            for x in user.hand:
                 if x.ID == ID:
-                    x.aktiv = False
+                    x.activ = False
 
-    def vymazani_sebe_mas_li(self, user, ID, karta = [], typ = []):   
+    def erase_if(self, user, ID, cards = [], colors = []):   
         """vymazána pokud mám aspon jeden typ"""
-        typy_karet_v_ruce = set([x.typ for x in user.ruka])
-        if any(x in typy_karet_v_ruce for x in typ[1]):
-            for x in user.ruka:
+        colors_in_hand = set([x.color for x in user.hand])
+        if any(x in colors_in_hand for x in colors[1]):
+            for x in user.hnad:
                 if x.ID == ID:
-                    x.aktiv = False
+                    x.activ = False
 
-    def ostran_postih(self, user, typ):
+    def penalty_off(self, user, color):
         """nastaví všechny postihy karet na False"""
-        for x in user.ruka:
-            if x.typ == typ:
-                x.postih_stav = False
+        for x in user.hand:
+            if x.color == color:
+                x.penalty_condition = False
 
-    def odstran_slovo(self, user, typ):
+    def erase_color(self, user, color):
         """vymaze zadaný typ ze všech postihu karet"""
-        for x in user.ruka:
-            if x.efekt2 != None: 
-                if typ in x.efekt2[4] and x.name != "Požár":
-                    x.efekt2[4].remove(typ)
-            if x.efekt3 != None:
+        for x in user.hand:
+            if x.effect2 != None: 
+                if color in x.effect2[4] and x.name != "Požár":
+                    x.effect2[4].remove(color)
+            if x.effect3 != None:
                 if x.name == "Bojová vzducholoď":
                     pass
                 else:
-                    if typ in x.efekt3[1] and x.name != "Požár":
-                        x.efekt3[1].remove(typ)
+                    if color in x.effect3[1] and x.name != "Požár":
+                        x.effect3[1].remove(color)
 
-    def odstran_slovo_ex(self, user, typ):
+    def erase_color_ex(self, user, color):
         """vymaze zadaný typ ze všech postihu karet
             specifického druhu"""
-        for x in user.ruka:
-            if x.typ == typ[0]:
-                if x.efekt2 != None: 
-                    if typ in x.efekt2[4] and x.name != "Požár":
-                        x.efekt2[4].remove(typ[1])
-                if x.efekt3 != None:
-                    if typ in x.efekt3[1] and x.name != "Požár":
-                        x.efekt3[1].remove(typ[1])
+        for x in user.hand:
+            if x.color == color[0]:
+                if x.effect2 != None: 
+                    if color in x.effect2[4] and x.name != "Požár":
+                        x.effect2[4].remove(color[1])
+                if x.effect3 != None:
+                    if color in x.effect3[1] and x.name != "Požár":
+                        x.effect3[1].remove(color[1])
 
 
 
-class Hrac(QObject):
+class Player(QObject):
 
-    počet_hráčů = 0
-    bodova_hodnota_celek_changed = pyqtSignal(int)
+    players = 0
+    points_all_changed = pyqtSignal(int)
     limit_change = pyqtSignal(int)
     max_limit_change = pyqtSignal(int)
-    karet_ruka_change = pyqtSignal(int)
-    string_ruka_change = pyqtSignal(str)
-    string_ruka_pasiv_change = pyqtSignal(str)
+    cards_hand_change = pyqtSignal(int)
+    string_hand_change = pyqtSignal(str)
+    string_hand_pasiv_change = pyqtSignal(str)
     
     
     def __init__(self,jmeno_hrace):
         super().__init__()
-        self.jmeno_hrace = jmeno_hrace
+        self.player_name = player_name
         self.limit = 7
         self.max_limit = 7
-        self.ruka = []
-        self.ruka_pasiv = []
-        self.string_ruka = ""
-        self.string_ruka_pasiv= ""
-        self.bodova_hodnota = 0
-        self.bodova_hodnota_efekty = 0
-        self.bodova_hodnota_celek = 0
-        Hrac.počet_hráčů += 1
-        self.karet_ruka = len(self.ruka) + len(self.ruka_pasiv)
+        self.hand = []
+        self.hand_pasiv = []
+        self.string_hand = ""
+        self.string_hand_pasiv= ""
+        self.points = 0
+        self.points_effects = 0
+        self.points_all = 0
+        Player.players += 1
+        self.cards_hand = len(self.hand) + len(self.hand_pasiv)
 
     @property
-    def string_ruka_pasiv(self):
-        return self._string_ruka
+    def string_hand_pasiv(self):
+        return self._string_hand
 
-    @string_ruka_pasiv.setter
+    @string_hand_pasiv.setter
     def string_ruka_pasiv(self, value):
-        self._string_ruka_pasiv = value
-        self.string_ruka_pasiv_change.emit(value)
+        self._string_hand_pasiv = value
+        self.string_hand_pasiv_change.emit(value)
 
         
 
     @property
-    def string_ruka(self):
-        return self._string_ruka
+    def string_hand(self):
+        return self._string_hand
 
-    @string_ruka.setter
-    def string_ruka(self, value):
-        self._string_ruka = value
-        self.string_ruka_change.emit(value)
+    @string_hand.setter
+    def string_hand(self, value):
+        self._string_hand = value
+        self.string_hand_change.emit(value)
 
         
     @property
-    def bodova_hodnota_celek(self):
-        return self._bodova_hodnota_celek
+    def points_all(self):
+        return self._points_all
 
-    @bodova_hodnota_celek.setter
-    def bodova_hodnota_celek(self, value):
-        self._bodova_hodnota_celek = value
-        self.bodova_hodnota_celek_changed.emit(value)
+    @points_all.setter
+    def points_all(self, value):
+        self._points_all = value
+        self.poins_all_changed.emit(value)
 
     @property
     def limit(self):
@@ -328,52 +328,52 @@ class Hrac(QObject):
 
 
     def __repr__(self):
-        return self.jmeno_hrace
+        return self.player_name
 
-    def pridat_kartu(self, name):
-        nova = list_karet[ind(name)]
+    def add_card(self, name):
+        new = list_karet[ind(name)]
         if nova in seznam_karet_použité or self.limit == 0:        
             print("Nelze přidat")
         else:
             self.limit -= 1 ##sníží o jedna
-            seznam_karet_použité.append(nova) ##hodí novou kartu do použitých
+            seznam_karet_použité.append(new) ##hodí novou kartu do použitých
             
-            self.ruka.append(nova)## hodí novou kartu na ruku
+            self.hand.append(new)## hodí novou kartu na ruku
  
             spocitej_body(self)
             spocitej_body(self)
             
             
             
-    def odebrat_kartu(self, name):
-        karta = list_karet[ind(name)]
-        index = list_karet.index(karta)
+    def remove_card(self, name):
+        card = list_karet[ind(name)]
+        index = list_karet.index(card)
         self.limit += 1
-        if karta in self.ruka:
-            self.ruka.remove(karta)
+        if card in self.hand:
+            self.hand.remove(card)
         else:
-            self.ruka_pasiv.remove(karta)
-        seznam_karet_použité.remove(karta)
-        recovery(self, karta, index)
+            self.hand_pasiv.remove(card)
+        seznam_karet_použité.remove(card)
+        recovery(self, card, index)
         is_it_active(self)
         spocitej_body(self)
 
     def reset(self):
         """resetuje hráče do stavu bez karet a
             obnoví všechny atributy karet"""
-        for x in self.ruka:
-            self.odebrat_kartu(x.name)
-        for x in self.ruka_pasiv:
-            self.odebrat_kartu(x.name)
+        for x in self.hand:
+            self.remove_card(x.name)
+        for x in self.hand_pasiv:
+            self.remove_card(x.name)
         self.limit = 7
         self.max_limit = 7
-        self.ruka = []
-        self.ruka_pasiv = []
-        self.string_ruka = ""
-        self.string_ruka_pasiv= ""
-        self.bodova_hodnota = 0
-        self.bodova_hodnota_efekty = 0
-        self.bodova_hodnota_celek = 0
+        self.hand = []
+        self.hand_pasiv = []
+        self.string_hand = ""
+        self.string_hand_pasiv= ""
+        self.points = 0
+        self.points_effects = 0
+        self.points_all = 0
         seznam_karet_použité.clear()
 
 def ind(name):
@@ -389,12 +389,12 @@ def ind(name):
     return index
         
 
-list_karet = [Karta(karta['name'], karta['body'], karta['typ'],
-                          karta.get('bonus'), karta.get('efekt'),
-                          karta.get('postih'), karta.get('efekt2'),
-                          karta.get('mazani'), karta.get('efekt3'),
-                          karta.get('vymaz_masli'), karta.get('vymaz_nemasli'),
-                          karta.get('odstran'), karta.get('efekt4')                           
-                          ) for karta in seznam_karet]
+list_karet = [Card(card['name'], card['body'], card['typ'],
+                          card.get('bonus'), card.get('efekt'),
+                          card.get('postih'), card.get('efekt2'),
+                          card.get('mazani'), card.get('efekt3'),
+                          card.get('vymaz_masli'), card.get('vymaz_nemasli'),
+                          card.get('odstran'), card.get('efekt4')                           
+                          ) for card in seznam_karet]
 
 
