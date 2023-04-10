@@ -1,87 +1,87 @@
 from is_active import *
-from seznam_2 import seznam_karet_2
-from seznam import seznam_karet
+from cards_stats_2 import cards_stats_2
+from cards_stats import cards_stats
 from hrac import *
 import copy
-#from hrac import Karta
+
+def recovery(user, card, index):
+    """Restores the returned card's attributes"""
+    new_list = copy.deepcopy(cards_stats_2)
+
+    if card.effect2 != None:
+        card.effekt2 = new_list[index]['efekt2']
+
+    if card.effect3 != None:
+        card.effect3 = new_list[index]['efekt3']
 
 
+    card.activ = True
+    card.penalty_condition = True
 
-
-def recovery(user, karta, index):
-    """obnoví atributy vrácené karty"""
-    novy_seznam = copy.deepcopy(seznam_karet_2)
-
-    if karta.efekt2 != None:
-        karta.efekt2 = novy_seznam[index]['efekt2']
-
-    if karta.efekt3 != None:
-        karta.efekt3 = novy_seznam[index]['efekt3']
-
-
-    karta.aktiv = True
-    karta.postih_stav = True
-
-def recovery_ruka(user):
-    """obnoví atributy všech karet na ruce"""
-    from hrac import list_karet
+def recovery_hand(user):
+    """Restores the attributes of all cards in the hand"""
+    from hrac import cards_list
     from hrac import ind
-    for x in user.ruka:
-        karta = list_karet[ind(x.name)]
-        index = list_karet.index(karta)
-        recovery(user, karta, index)
+    for x in user.hand:
+        card = cards_list[ind(x.name)]
+        index = cards_list.index(card)
+        recovery(user, card, index)
         
 
-def spocitej_body(user):
-    from is_active import obnova
-    """spočítá body třídě Hrac a ošetří aktivní status karty"""
-    user.bodova_hodnota_efekty = 0
-    user.bodova_hodnota = 0
-    user.bodova_hodnota_celek = 0
+def points_count(user):
+    from is_active import active_true, all_active, is_it_active
+    """It first finds out which cards are not active
+       and then counts the points"""
+    user.points_effects = 0
+    user.points = 0
+    user.points_all = 0
 
-    obnova(user); aktive_true(user)
-    recovery_ruka(user)
-    postihy_none(user)
-    postihy_ostraneni(user)
+    all_active(user); active_true(user)
+    recovery_hand(user)
+    penalty_off_all(user)
+    penalty_delete(user)
     is_it_active(user)      
         
         
-    for x in user.ruka:
-        user.bodova_hodnota += x.body 
+    for x in user.hand:
+        user.points += x.value 
         if x.bonus == 'post':
-            x.postupka(user)
+            x.sequence(user)
         if x.bonus == 'bkt':
-            x.bonus_karta_typ(user, x.ID, *x.efekt)
-        if x.postih == 'bkt' and x.postih_stav == True:
-            x.bonus_karta_typ(user, x.ID, *x.efekt2)
+            x.card_bonus(user, x.ID, *x.effect)
+        if x.penalty == 'bkt' and x.penalty_condition == True:
+            x.card_bonus(user, x.ID, *x.effect2)
         if x.bonus == 'ret':
-            x.max_hodnota(user, *x.efekt)
+            x.max_value(user, *x.effect)
         if x.bonus == 'mt':
-            x.max_typ(user)
+            x.max_same_suit(user)
         if x.bonus == 'pl':
             x.plus_limit(user)
         if x.bonus == 'lc':
-            x.licha_cisla(user)
+            x.odd_value(user)
         if x.bonus == 'nt':
-            x.nestejne_typy(user)
-    user.bodova_hodnota_celek = (user.bodova_hodnota +
-                                user.bodova_hodnota_efekty)
+            x.different_suits(user)
+    user.points_all = (user.points + user.points_effects)
 
-def postihy_ostraneni(user):
-    """odstraní postihy podle ruzných požadavků"""
-    for x in user.ruka:
-        if x.odstran == 'odstr':
-            x.ostran_postih(user, x.efekt4)
-        if x.odstran == 'slovo':
-            x.odstran_slovo(user, x.efekt4)
-        if x.odstran == 'exclusive':
-            x.odstran_slovo_ex(user, x.efekt4)
+def penalty_delete(user):
+    """remove penalties according to various requirements"""
+    for x in user.hand:
+        if x.delete == 'odstr':
+            x.penalty_off(user, x.effect4)
+        if x.delete == 'slovo':
+            x.erase_suit(user, x.effect4)
+        if x.delete == 'exclusive':
+            x.erase_suit_ex(user, x.effect4)
 
-def postihy_none(user):
-    """Nastaví všechny postihy na None, musí být první"""
-    if any('11-Ochranná runa' == x.ID for x in user.ruka):
-        for x in user.ruka:
-            x.postih_stav = False
+def penalty_off_all(user):
+    """Sets all penalty contition to False, must be first"""
+    if any('11-Ochranná runa' == x.ID for x in user.hand):
+        for x in user.hand:
+            x.penalty_condition = False
+
+
+
+
 
 
 

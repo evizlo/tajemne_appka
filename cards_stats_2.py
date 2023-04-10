@@ -1,16 +1,16 @@
 
 
-seznam_typu = ['oheň', 'zbraň', 'artefakt' , 'armáda', 'vůdce',
+suits_list = ['oheň', 'zbraň', 'artefakt' , 'armáda', 'vůdce',
                'počasí', 'země', 'potopa','tvor', 'čaroděj']
 
-seznam_karet_2 = [
+cards_stats_2 = [
     {'name' : 'Svíčka', 'body' : 2, 'typ' : 'oheň',
      'bonus': 'bkt',
      'efekt': [0, 100, 'plus', ['Kniha proměn' , 'Zvonice'], 'čaroděj']},
 ############################################################################    
     {'name' : 'Blesk', 'body' : 11, 'typ' : 'oheň',
      'bonus': 'bkt',
-     'efekt' : [0, 30, 'any_karta', ["Bouře",], []]},
+     'efekt' : [0, 30, 'any_card', ["Bouře",], []]},
 ############################################################################    
     {'name' : 'Požár', 'body' : 40, 'typ' : 'oheň',
      'mazani': 'priorita_3',
@@ -27,7 +27,7 @@ seznam_karet_2 = [
 ############################################################################    
     {'name' : 'Elfský luk',        'body' : 3,   'typ' : 'zbraň',
      'bonus': 'bkt',
-     'efekt' : [0, 30, 'any_karta',
+     'efekt' : [0, 30, 'any_card',
                ['Elfí lučištníci', 'Velitel', 'Pán šelem'],[]]},
 ############################################################################   
     {'name' : 'Kethský meč',       'body' : 7,   'typ' : 'zbraň',
@@ -88,7 +88,7 @@ seznam_karet_2 = [
 ############################################################################    
     {'name' : 'Velitel',           'body' : 4,   'typ' : 'vůdce',
      'bonus': 'bkt',
-     'efekt' : [0, 0, 'součet', [], 'armáda']},
+     'efekt' : [0, 0, 'sum', [], 'armáda']},
 ############################################################################    
     {'name' : 'Princezna',         'body' : 2,   'typ' : 'vůdce',
      'bonus': 'bkt',
@@ -116,7 +116,7 @@ seznam_karet_2 = [
 ############################################################################    
     {'name' : 'Tornádo',           'body' : 13,  'typ' : 'počasí',
      'bonus': 'bkt',
-     'efekt': [0, 40, 'vice_spec', [['Bouře'],
+     'efekt': [0, 40, 'more_special', [['Bouře'],
               ['Sněhová vánice', 'Stoletá voda']], []]},
 ############################################################################
     {'name' : 'Sněhová vánice',    'body' : 30,  'typ' : 'počasí',
@@ -145,7 +145,7 @@ seznam_karet_2 = [
 ############################################################################
     {'name' : 'Jeskyně',           'body' : 6,   'typ' : 'země',
      'bonus': 'bkt',
-     'efekt': [0, 25, 'any_karta',
+     'efekt': [0, 25, 'any_card',
               ['Trpasličí pěchota', 'Drak'],[]],
      'odstran': 'odstr',
      'efekt4' : 'počasí'},
@@ -178,7 +178,7 @@ seznam_karet_2 = [
 ############################################################################
     {'name' : 'Válečný oř',        'body' : 6,   'typ' : 'tvor',
      'bonus': 'bkt',
-     'efekt' : [14, 0, 'any_typ', [], ['vůdce', 'čaroděj']]},
+     'efekt' : [14, 0, 'any_color', [], ['vůdce', 'čaroděj']]},
 ############################################################################
     {'name' : 'Drak',              'body' : 30,  'typ' : 'tvor',
      'postih': 'bkt',
@@ -190,12 +190,12 @@ seznam_karet_2 = [
 ############################################################################
     {'name' : 'Jednorožec',        'body' : 9,   'typ' : 'tvor',
      'bonus': 'bkt',
-     'efekt': [0, [30, 15], 'mene_spec',
+     'efekt': [0, [30, 15], 'less_special',
               [['Princezna'], ['Císařovna', 'Královna', 'Kouzelnice']],[]]},
 ############################################################################
     {'name' : 'Hydra',             'body' : 12,  'typ' : 'tvor',
      'bonus': 'bkt',
-     'efekt': [0, 28, 'any_karta', ['Bažina'], []]},
+     'efekt': [0, 28, 'any_card', ['Bažina'], []]},
 ############################################################################
     {'name' : 'Sběratel',          'body' : 7,   'typ' : 'čaroděj',
      'bonus': 'mt'},
@@ -220,7 +220,4 @@ seznam_karet_2 = [
     {'name' : 'Šašek',         'body' : 3,   'typ' : 'čaroděj',
      'bonus': 'lc'}
      ]
-
-
-
 
